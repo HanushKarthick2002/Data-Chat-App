@@ -3,7 +3,7 @@ import axios from "axios";
 import "./App.css"; // Import the CSS file
 
 function App() {
-    const [file, setFile] = useState(null);
+    const [files, setFiles] = useState([]);
     const [question, setQuestion] = useState("");
     const [description, setDescription] = useState("");
     const [schema, setSchema] = useState([]);
@@ -13,12 +13,15 @@ function App() {
 
     const handleFileUpload = async () => {
         const formData = new FormData();
-        formData.append("file", file);
+        files.forEach(file => formData.append("files", file));
         
         const response = await axios.post("http://127.0.0.1:8001/upload-csv/", formData);
         alert(response.data.message);
         fetchSchema();
     };
+
+    
+    
 
     const fetchSchema = async () => {
         const response = await axios.get("http://127.0.0.1:8001/extract-schema/");
@@ -84,11 +87,11 @@ function App() {
 
     return (
         <div className="container">
-            <h1 className="title">CSV to SQL Query Generator</h1>
+            <h1 className="title">Data Chat App</h1>
 
             <div className="card">
-                <input type="file" onChange={(e) => setFile(e.target.files[0])} className="file-input" />
-                <button onClick={handleFileUpload} className="btn">Upload CSV</button>
+                <input type="file" multiple onChange={(e) => setFiles(Array.from(e.target.files))} className="file-input" />
+                <button onClick={handleFileUpload} className="btn">Upload CSVs</button>
             </div>
 
             <div className="card">
